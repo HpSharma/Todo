@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ToDo List</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <style>
+    /* Your existing CSS styles */
+    body {
+      font-family: 'Arial', sans-serif;
+      background: #d5d5d5;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      position: relative;
+    }
+
+    .logout-form {
+      position: absolute;
+      top: 10px;
+      right: 5%;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .task-list {
+      list-style: none;
+      padding: 0px;
+    }
+
+    .task-list li {
+      padding: 10px;
+      margin: 10px 0px;
+      display: flex;
+      justify-content: space-between;
+      background-color: papayawhip;
+      border-radius: 8px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container mt-5">
+    <header class="sticky-top" style="background-color: #d5d5d5;">
+      <div>
+        <h1 class="mb-4">ToDo List</h1>
+        <!-- Button to trigger add task modal -->
+        <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addTaskModal">
+          Add Task
+        </button>
+      </div>
+
+      <form action="/logout" method="post">
+        <button type="submit" class="btn btn-danger">Logout</button>
+      </form>
+    </header>
+
+    <ul class="list-group">
+      <% tasks.forEach(task=> { %>
+        <li class="list-group-item d-flex justify-content-between"
+          style="background-color: papayawhip; margin: 10px 0px;">
+          <div>
+            <h3>
+              <%= task.title %>
+            </h3>
+            <p>
+              <%= task.description %>
+            </p>
+            <% if (task.completed) { %>
+              <span class="badge text-bg-success">Completed</span>
+              <% } else { %>
+                <span class="badge text-bg-warning">Pending</span>
+                <% } %>
+          </div>
+          <div>
+            <!-- Button to trigger update task modal -->
+            <button type="button" class="btn btn-outline-success me-2" data-bs-toggle="modal"
+              data-bs-target="#updateTaskModal-<%= task._id %>">
+              Update
+            </button>
+            <!-- Delete task button -->
+            <form action="/delete/<%= task._id %>" method="POST" style="display:inline;">
+              <button type="submit" class="btn btn-outline-danger">Delete</button>
+            </form>
+          </div>
+        </li>
+        <% }) %>
+    </ul>
+  </div>
+
+  <!-- Add Task Modal -->
+  <div class="modal fade" id="addTaskModal" tabindex="-1" aria-labelledby="addTaskModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="addTaskModalLabel">Add Task</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form action="/add" method="POST">
+            <div class="mb-3">
+              <label for="addTaskTitle" class="form-label">Title*</label>
+              <input type="text" class="form-control" id="addTaskTitle" name="title" required>
+            </div>
+            <div class="mb-3">
+              <label for="addTaskDescription" class="form-label require">Description*</label>
+              <input type="text" class="form-control" id="addTaskDescription" name="description" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Add Task</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Update Task Modals -->
+  <% tasks.forEach(task=> { %>
+    <div class="modal fade" id="updateTaskModal-<%= task._id %>" tabindex="-1"
+      aria-labelledby="updateTaskModalLabel-<%= task._id %>" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="updateTaskModalLabel-<%= task._id %>">Update Task</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form action="/update" method="POST">
+              <input type="hidden" value="<%= task._id %>" id="id" name="id"/>
+              <div class="mb-3">
+                <label for="updateTaskTitle-<%= task._id %>" class="form-label">Title*</label>
+                <input type="text" class="form-control" id="updateTaskTitle-<%= task._id %>" name="title"
+                  value="<%= task.title %>" required>
+              </div>
+              <div class="mb-3">
+                <label for="addTaskDescription-<%= task._id %>" class="form-label">Description*</label>
+                <input type="text" class="form-control" id="addTaskDescription-<%= task._id %>" name="description"
+                  value="<%= task.description %>" required>
+              </div>
+              <div class="mb-3 form-check">
+                <input type="checkbox" class="form-check-input" id="completedCheck-<%= task._id %>" name="completed" <%= task.completed ? 'checked' : '' %>>
+                <label class="form-check-label" for="completedCheck-<%= task._id %>">Completed Task?</label>
+              </div>
+              <button type="submit" class="btn btn-primary">
+                Update
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <% }) %>
+
+      <!-- Bootstrap JS -->
+      <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>
