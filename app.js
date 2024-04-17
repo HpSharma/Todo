@@ -7,21 +7,22 @@ const { config } = require('dotenv');
 const path = require('path')
 
 const { verifyToken } = require('./jwt');
+
 // Routes
 const registerRoutes = require('./src/routes/register.routes');
 const loginRoutes = require('./src/routes/login.routes');
 const taskRoutes = require('./src/routes/task.routes');
 
-config();
-const app = express();
+config({ path: `.env.${process.env.NODE_ENV}` });
 
+const app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(session({
   secret: process.env.JWT_SECRET,
   resave: false,
   saveUninitialized: false,
-  cookie: { secure: false },
+  cookie: { secure: true },
 }));
 app.use((req, res, next) => {
   res.locals.session = req.session;

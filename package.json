@@ -1,5 +1,5 @@
 {
-  "name": "Todo",
+  "name": "to-do",
   "version": "1.0.0",
   "description": "",
   "main": "app.js",
@@ -8,9 +8,10 @@
   },
   "scripts": {
     "start": "node app.js",
-    "dev": "nodemon app.js set NODE_ENV=local"
+    "dev": "cross-env NODE_ENV=local nodemon app.js"
   },
   "devDependencies": {
+    "cross-env": "^7.0.3",
     "nodemon": "^3.1.0"
   },
   "author": "Harpal Sharma",
