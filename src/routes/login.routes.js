@@ -1,13 +1,11 @@
 const express = require('express');
 const bcrypt = require('bcrypt');
 const router = express.Router();
-const path = require('path');
 
 const User = require('../models/user');
 const cache = require('../../cache');
-const { getToken, decodeToken } = require('../../jwt');
+const { getToken } = require('../../jwt');
 
-const VIEW_PATH = path.join(__dirname, '..', 'view');
 
 function isValidEmail(email) {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -18,7 +16,7 @@ router.get('/login', (req, res) => {
   if (req.session.user) {
     res.redirect('/');
   }
-  res.sendFile(VIEW_PATH + '/login.html');
+  res.render('login');
 });
 
 router.post('/login', async (req, res) => {

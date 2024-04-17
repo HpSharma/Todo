@@ -4,6 +4,7 @@ const session = require('express-session');
 const cookieParser = require('cookie-parser');
 const mongoose = require('mongoose');
 const { config } = require('dotenv');
+const path = require('path')
 
 const { verifyToken } = require('./jwt');
 // Routes
@@ -28,6 +29,7 @@ app.use((req, res, next) => {
 });
 
 // Set EJS as view engine
+app.set('views', path.join(__dirname, 'src/views'));
 app.set('view engine', 'ejs');
 
 mongoose.connect(process.env.ATLAS_URI);

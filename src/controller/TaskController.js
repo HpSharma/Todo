@@ -1,13 +1,11 @@
 const Task = require('../models/task');
-const path = require('path');
 const validator = require('validator');
 
-const VIEW_PATH = path.join(__dirname, '..', 'view');
 
 exports.getAllTasks = async (req, res) => {
   try {
     const tasks = await Task.find();
-    res.render(VIEW_PATH + '/home.ejs', { tasks });
+    res.render('home', { tasks });
   } catch (err) {
     console.error(err);
     res.status(500).send('Server Error');
